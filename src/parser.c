@@ -1,38 +1,4 @@
-#define _GNU_SOURCE
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
-
-
-typedef struct facets {
-	int *vertexes;
-	int numbers_of_vertexes_in_facets;
-} polygon_t;
-
-typedef struct Matrix {
-	double **matrix;
-	int rows;
-	int cols;
-} matrix_t;
-
-
-typedef struct data {
-	int count_of_vertexes;
-	int count_of_facets;
-	matrix_t matrix_3d;
-    polygon_t *polygons;
-} data_t;
-
-void init_data(data_t* data);
-int parsline(char* filename);
-void init_polygon(data_t* data, char *line, size_t len, int );
-
-int main(){
-    parsline("test.obj");
-    return 0;
-}
-
+#include "parser.h"
 
 
 
@@ -42,15 +8,18 @@ int parsline(char* filename) {
     fpos_t pos;
     data_t data;
     char tmp;
-    char *currline = NULL;
+    char* currline;
     size_t len;
+    char* buff_line;
 
 
+    len = 128;
+    buff_line = NULL;
+    currline = NULL;
     data.count_of_facets = 0;
     data.count_of_vertexes = 0;
-    fgetpos(file, &pos);
-    
 
+    fgetpos(file, &pos);
     
     while(!feof(file)) {
         tmp = getc(file);
@@ -69,22 +38,25 @@ int parsline(char* filename) {
     {
         tmp = getc(file);
         if ('v' == tmp ) {
-            for(int j = 1; j < data.count_of_vertexes ; ++j) {
+            for(int j = 0; j < data.count_of_vertexes ; ++j) 
                 fscanf(file, " %lf ", &data.matrix_3d.matrix[v][j]);
-                printf("%lf ",  data.matrix_3d.matrix[v][j]);
-            }
             ++v;
             }
         if ('f' == tmp) {
             getline(&currline, &len, file);
-            init_polygon(&data, currline, len, f);
+            buff_line = malloc(len);
+            for(int i = 0; currline[i] != '\0'; ++i) buff_line[i] = currline[i]; 
+            init_polygon(&data, buff_line, f, len);
             ++f;
+            free(buff_line);
         }
-  
     }
     
-    fclose(file);
+    free(currline);
     printf("%d %d\n", data.count_of_facets, data.count_of_vertexes);
+    destroy_data(&data);
+
+    fclose(file);
 }
 
 
@@ -93,32 +65,50 @@ void init_data(data_t* data) {
 
     data->matrix_3d.rows = data->count_of_vertexes + 1;
     data->matrix_3d.cols = 3;
-    data->matrix_3d.matrix = (double**) malloc(sizeof(double*) * data->matrix_3d.rows
-                                             + sizeof(double) * data->matrix_3d.rows * data->matrix_3d.cols);
+    data->matrix_3d.matrix = (double**) malloc(sizeof(double*) * data->matrix_3d.rows);
+    data->matrix_3d.matrix[0] = malloc(sizeof(double) *  data->matrix_3d.cols * data->matrix_3d.rows);
     for(int i = 1; i < data->matrix_3d.rows; ++i)
-        data->matrix_3d.matrix[i] = (double*) data->matrix_3d.matrix + i*(sizeof(double*)) ;
+        data->matrix_3d.matrix[i] = data->matrix_3d.matrix[0] + i * data->matrix_3d.cols;
     
-    data->polygons = malloc(sizeof(polygon_t*) * data->count_of_facets + 1);
+    data->polygons = malloc(sizeof(polygon_t) * (data->count_of_facets + 1));
+    
 }
 
 
-void init_polygon(data_t* data, char *line, size_t len, int index) {
+void init_polygon(data_t* data, char* line, int index ,size_t len) {
 
-    char* currline = NULL;
     int count = 1;
-    char* buff_line = malloc(len);
-    char* tmp;
+    char* buff_line = NULL;
+    buff_line =  malloc(strlen(line) + 1);
+    char* tmp = NULL;
+    char* delim = " ";
+
     strcpy(buff_line, line);
-    strtok(buff_line, " "); 
-    for(; strtok(NULL, " ") != NULL ; ++count);
+    strtok(buff_line, delim); 
+    for(; strtok(NULL, delim) != NULL ; ++count);
+    
     data->polygons[index].numbers_of_vertexes_in_facets = count;
-    data->polygons[index].vertexes = malloc(sizeof(int) * data->polygons[index].numbers_of_vertexes_in_facets);
+    data->polygons[index].vertexes = malloc(sizeof(int) * count);
+
     strcpy(buff_line, line);
-    tmp = strtok(buff_line, " ");
-    //for(; (tmp = strtok(NULL, " ")) != NULL ; data->polygons[index]. = atof(tmp));
+    tmp = strtok(buff_line, delim);
+    printf("f = (%d) ", index);
     for (int i = 0; i < data->polygons[index].numbers_of_vertexes_in_facets; ++i){
         data->polygons[index].vertexes[i] = atoi(tmp);
-        strtok(NULL, " ");
+        printf("|%d| ",data->polygons[index].vertexes[i]);
+        tmp = strtok(NULL, delim);
     }
+    free(tmp);
+    free(buff_line);
+    printf("\n");
+}
 
+void destroy_data(data_t * data) {
+    
+    
+    for(int i = 0; i <= data->count_of_facets; ++i) 
+        free(data->polygons[i].vertexes);
+    free(data->polygons);
+    free(data->matrix_3d.matrix[0]);
+    free(data->matrix_3d.matrix);    
 }
