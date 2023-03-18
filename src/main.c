@@ -28,7 +28,7 @@ void init_data(data_t* data);
 void init_polygon(data_t* data, char *line, size_t len, int );
 
 int main(){
-    parsline("test.obj");
+    parsline("airboat.obj");
     return 0;
 }
 
@@ -54,9 +54,11 @@ int parsline(char* filename) {
     while(!feof(file)) {
         tmp = getc(file);
         if ('v' == tmp)
-            data.count_of_vertexes += 1;
-        if ('f' == tmp) 
-            data.count_of_facets += 1;
+            if (' ' == (tmp = getc(file)))
+                data.count_of_vertexes += 1;
+        if ('f' == tmp)
+            if (' ' == (tmp = getc(file)))
+                data.count_of_facets += 1;
     }
     printf("%d %d\n", data.count_of_facets, data.count_of_vertexes);
     fsetpos(file, &pos);

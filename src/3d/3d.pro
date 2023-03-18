@@ -1,4 +1,4 @@
-QT       += core gui opengl widgets
+QT       += core gui opengl
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -11,14 +11,16 @@ CONFIG += c++11
 SOURCES += \
     main.cpp \
     mainwindow.cpp \
-    myglwidget.cpp
+    mywidget.cpp
 
 HEADERS += \
     mainwindow.h \
-    myglwidget.h
+    mywidget.h
 
 FORMS += \
     mainwindow.ui
+
+LIBS += -lGL
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

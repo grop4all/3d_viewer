@@ -1,6 +1,6 @@
 
 all:
-	gcc -std=c11 -g parser.c -o out
+	gcc -Wall -Wextra -std=c11 -g parser.c -o out
 	./out
 
 leaks: all
