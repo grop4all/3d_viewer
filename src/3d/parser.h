@@ -25,6 +25,6 @@ typedef struct data {
 
 
 void init_data(data_t* data);
-data_t* parsline(char* filename,data_t* ptr_data);
+int parsline(char* filename,data_t* data);
 void init_polygon(data_t* data, char *line, int index);
 void destroy_data(data_t * data);

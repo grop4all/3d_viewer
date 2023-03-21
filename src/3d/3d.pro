@@ -11,11 +11,17 @@ CONFIG += c++11
 SOURCES += \
     main.cpp \
     mainwindow.cpp \
-    mywidget.cpp
+    mywidget.cpp \
+    parser.c \
+    transformations.c
+
 
 HEADERS += \
     mainwindow.h \
-    mywidget.h
+    mywidget.h \
+    parser.h \
+    transformations.h
+
 
 FORMS += \
     mainwindow.ui

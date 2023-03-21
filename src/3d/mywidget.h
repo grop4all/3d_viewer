@@ -4,6 +4,9 @@
 #include <QWidget>
 #include <QOpenGLWidget>
 #include <GL/gl.h>
+extern "C" {
+#include "parser.h"
+}
 
 
 class MyWidget : public QOpenGLWidget
@@ -13,7 +16,7 @@ public:
     explicit MyWidget(QWidget *parent = nullptr);
     void initializeGL();
     void resizeGL(int h, int w);
-    void paintGL();
+    void paintGL(data_t* data);
 
 signals:
 

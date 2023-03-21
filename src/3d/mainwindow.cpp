@@ -10,6 +10,17 @@ MainWindow::MainWindow(QWidget *parent)
 
 MainWindow::~MainWindow()
 {
+    data_t data ;
+    char str[20] = "../skull.obj";
+    int a = parsline(str, &data);
+    printf("%d", a);
+    MyWidget* mywidget = new MyWidget();
+    mywidget->initializeGL();
+    mywidget->resize(200,200);
+    mywidget->show();
+    mywidget->paintGL(&data);
+
+    ui->openGLWidget = mywidget;
     delete ui;
 }
 

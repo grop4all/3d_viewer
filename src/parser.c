@@ -1,33 +1,27 @@
 #include "parser.h"
 
-
-int main(){
-    parsline("test_sample/airboat.obj");
-    return 0;
-}
-
-int parsline(char* filename) {
+data_t* parsline(char* filename, data_t* data) {
 
     FILE* file;
     fpos_t pos;
-    data_t data = { 
-        .count_of_facets = 0,
-        .count_of_vertexes = 0,
-        .matrix_3d ={NULL, 0 , 0},
-        .polygons = NULL,
-    };
-    int ans;
     int tmp;
     char* currline;
     size_t len;
     char* buff_line;
 
-    if ( NULL == (file = fopen(filename, "r"))) {ans = 1;}
-    
+    data = (data_t*) malloc(sizeof(data_t));
+    data->count_of_facets = 0;
+    data->count_of_vertexes = 0;
+    data->matrix_3d.matrix = NULL;
+    data->matrix_3d.cols = 0;
+    data->matrix_3d.rows = 0;
+    data->polygons = NULL;
+
     len = 128;
-    ans = 0;
     buff_line = NULL;
     currline = NULL;
+
+    if ( NULL == (file = fopen(filename, "r"))) {data = NULL;}
 
 
     fgetpos(file, &pos);
@@ -36,19 +30,19 @@ int parsline(char* filename) {
         if ('f' == tmp) {
             puff = getc(file);
             if (puff == ' ')
-                data.count_of_facets += 1; 
+                data->count_of_facets += 1; 
         }
         if ('v' == tmp) {
             puff = getc(file);
             if (puff == ' ')
-                data.count_of_vertexes += 1;
+                data->count_of_vertexes += 1;
         }
     }
-    printf("v = %d, f = %d ", data.count_of_vertexes, data.count_of_facets);
+    printf("v = %d, f = %d ", data->count_of_vertexes, data->count_of_facets);
     
     fsetpos(file, &pos);
 
-    init_data(&data);
+    init_data(data);
     int v = 1, f = 1;
     while (!feof(file))
     {
@@ -56,7 +50,9 @@ int parsline(char* filename) {
         if ('v' == tmp ) {
             puff = getc(file);
             if (puff == ' ') {    
-                fscanf(file, "%lf%lf%lf", &data.matrix_3d.matrix[v][0],&data.matrix_3d.matrix[v][1],&data.matrix_3d.matrix[v][2]);
+                fscanf(file, "%lf %lf %lf", &data->matrix_3d.matrix[v][0], 
+                                            &data->matrix_3d.matrix[v][1], 
+                                            &data->matrix_3d.matrix[v][2]);
                 // printf("%lf%lf%lf\n", data.matrix_3d.matrix[v][0], data.matrix_3d.matrix[v][1], data.matrix_3d.matrix[v][2]);
                 ++v;
             }
@@ -67,15 +63,14 @@ int parsline(char* filename) {
             getline(&currline, &len, file);
             buff_line = malloc(len);
             for(int i = 0; currline[i] != '\0'; ++i) buff_line[i] = currline[i]; 
-            init_polygon(&data, buff_line, f);
+            init_polygon(data, buff_line, f);
             ++f;
             free(buff_line);}
         }
     }
     free(currline);
-    destroy_data(&data);
     fclose(file);
-    return ans;
+    return data;
 }
 
 

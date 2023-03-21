@@ -1,10 +1,7 @@
 #include "transformations.h"
 
-int main() {
-	return 0;
-}
 
-void fund_min_max_or(matrix_t *A, int *ptr_x, int* ptr_y, int* ptr_z) {
+void found_min_max_or(matrix_t *A, int *ptr_x, int* ptr_y, int* ptr_z) {
 	int min_max_x[] = {1,1};
 	int min_max_y[] = {1,1};
 	int min_max_z[] = {1,1};
@@ -26,16 +23,21 @@ void fund_min_max_or(matrix_t *A, int *ptr_x, int* ptr_y, int* ptr_z) {
 
 void first_centers(matrix_t* A){
 
-	int* min_max_x ;
-	int* min_max_y;
-	int* min_max_z;
+    int* min_max_x = NULL;
+    int* min_max_y = NULL;
+    int* min_max_z = NULL;
+    double centerx;
+    double centery;
+    double centerz;
 
 	found_min_max_or(A, min_max_x, min_max_y, min_max_z);
 
-
-	double centerx = A->matrix[min_max_x[1]][0] + (A->matrix[min_max_x[1]][0] - A->matrix[min_max_x[0]][0])/2 ;
-	double centery = A->matrix[min_max_y[1]][1] + (A->matrix[min_max_y[1]][1] - A->matrix[min_max_y[0]][1])/2 ;
-	double centerz = A->matrix[min_max_z[1]][2] + (A->matrix[min_max_z[1]][2] - A->matrix[min_max_z[0]][2])/2 ;
+    if (min_max_x != NULL)
+        centerx = A->matrix[min_max_x[1]][0] + (A->matrix[min_max_x[1]][0] - A->matrix[min_max_x[0]][0])/2 ;
+    if (min_max_y != NULL)
+        centery = A->matrix[min_max_y[1]][1] + (A->matrix[min_max_y[1]][1] - A->matrix[min_max_y[0]][1])/2 ;
+    if (min_max_z != NULL)
+        centerz = A->matrix[min_max_z[1]][2] + (A->matrix[min_max_z[1]][2] - A->matrix[min_max_z[0]][2])/2 ;
 
 	for (int i = 0; i < A->rows; i++) {
 		 A->matrix[i][0] -= centerx;
@@ -47,9 +49,9 @@ void first_centers(matrix_t* A){
 
 void first_init_val_gl(matrix_t* A) {
 	
-	int* min_max_x;
-	int* min_max_y;
-	int* min_max_z;
+    int* min_max_x = NULL;
+    int* min_max_y = NULL;
+    int* min_max_z = NULL;
 	const double value = 0.5;
 	double scal;
 	double dmax;
@@ -70,9 +72,9 @@ void first_init_val_gl(matrix_t* A) {
 	scal = (value - (value * (-1))) / dmax;
 
 	for (int i = 0; A->matrix; ++i)
-		for(int j = 0; A->cols; ++j) {
+        for(int j = 0; A->cols; ++j)
 			A->matrix[i][j] *= scal;
-		}
+
 
 }
 
