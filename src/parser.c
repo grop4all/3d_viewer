@@ -1,8 +1,24 @@
 #include "parser.h"
 
-int crete_date(data_t *data) {
-  int ans;
-  ans = 1;
+// int main ()
+// {
+//   data_t* data = create_data();
+//   parsline("skull.obj", data);
+
+//   for(int i = 1; i < data->count_of_facets; ++i){
+//         printf("count of facets %d \n", i);
+//         for(int j = 0; j < data->polygons[i].numbers_of_vertexes_in_facets;
+//         ++j) {
+//             printf("data->polygons[i].numbers_of_vertexes_in_facets %d\n",
+//             data->polygons[i].numbers_of_vertexes_in_facets); printf("%d
+//             ",data->polygons[i].vertexes[j]);
+
+//         }
+//   }
+// }
+
+data_t *create_data() {
+  data_t *data = NULL;
   data = (data_t *)malloc(sizeof(data_t));
   data->count_of_facets = 0;
   data->count_of_vertexes = 0;
@@ -10,9 +26,7 @@ int crete_date(data_t *data) {
   data->matrix_3d.cols = 0;
   data->matrix_3d.rows = 0;
   data->polygons = NULL;
-  if (data == NULL)
-    ans = 0;
-  return ans;
+  return data;
 }
 
 int parsline(char *filename, data_t *data) {
@@ -60,7 +74,7 @@ int parsline(char *filename, data_t *data) {
     if ('v' == tmp) {
       puff = getc(file);
       if (puff == ' ') {
-        if (fscanf(file, "%lf %lf %lf", &data->matrix_3d.matrix[v][0],
+        if (fscanf(file, "%lf%lf%lf", &data->matrix_3d.matrix[v][0],
                    &data->matrix_3d.matrix[v][1],
                    &data->matrix_3d.matrix[v][2]))
           ++v;
@@ -85,7 +99,7 @@ int parsline(char *filename, data_t *data) {
 }
 
 int init_data(data_t *data) {
-  //подсчет с 1
+  // подсчет с 1
   int ans;
   ans = 1;
   if (data == NULL)
@@ -100,7 +114,7 @@ int init_data(data_t *data) {
       data->matrix_3d.matrix[i] =
           (double *)malloc(sizeof(double) * data->matrix_3d.cols);
 
-    for (int i = 1; i < data->matrix_3d.rows; ++i)
+    for (int i = 0; i < data->matrix_3d.rows; ++i)
       for (int j = 0; j < 3; ++j)
         data->matrix_3d.matrix[i][j] = .0;
 
@@ -146,13 +160,20 @@ int init_polygon(data_t *data, char *line, int index) {
   return ans;
 }
 
-void destroy_data(data_t *data) {
-
-  for (int i = 0; i <= data->count_of_facets; ++i)
+void destroy_data(data_t **datta) {
+  data_t *data = *datta;
+  for (int i = 0; i <= data->count_of_facets; ++i) {
     free(data->polygons[i].vertexes);
+    data->polygons[i].vertexes = NULL;
+  }
   free(data->polygons);
-  for (int i = 0; i < data->matrix_3d.rows; ++i)
+  data->polygons = NULL;
+  for (int i = 0; i < data->matrix_3d.rows; ++i) {
     free(data->matrix_3d.matrix[i]);
+    data->matrix_3d.matrix[i] = NULL;
+  }
   free(data->matrix_3d.matrix);
+  data->matrix_3d.matrix = NULL;
   free(data);
+  *datta = NULL;
 }

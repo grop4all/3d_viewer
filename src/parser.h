@@ -1,4 +1,5 @@
 #define _GNU_SOURCE
+#define PARSER
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -23,6 +24,6 @@ typedef struct data {
 
 int init_data(data_t *data);
 int parsline(char *filename, data_t *data);
-int create_data(data_t *data);
+data_t *create_data();
 int init_polygon(data_t *data, char *line, int index);
-void destroy_data(data_t *data);
+void destroy_data(data_t **data);

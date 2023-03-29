@@ -6,21 +6,90 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    connectSetup();
+
+}
+
+
+void MainWindow::connectSetup() {
+    connect(ui->pushButton, &QPushButton::clicked, this,
+            &MainWindow::paintfile);
+    //connect(ui->Button_rotate_x, &QPushButton::clicked, ui->widget, &MyWidget::translate_x );
+}
+
+
+void MainWindow::paintfile() {
+    QString path = QFileDialog::getOpenFileName(0, "Open File .obj", "/Users/", "*.obj");
+    if (path == "") return;
+    QByteArray ba = path.toLocal8Bit();
+    char *c_path = ba.data();
+    ui->widget->filename = c_path;
+    ui->widget->initializeGL();
+    ui->widget->initialize_data();
+    ui->label_V_count->setText(QString::number(ui->widget->data->count_of_vertexes));
+    ui->label_F_count->setText(QString::number(ui->widget->data->count_of_facets));
+    ui->widget->paintGL();
+    ui->widget->update();
 }
 
 MainWindow::~MainWindow()
 {
-    data_t data ;
-    char str[20] = "../skull.obj";
-    int a = parsline(str, &data);
-    printf("%d", a);
-    MyWidget* mywidget = new MyWidget();
-    mywidget->initializeGL();
-    mywidget->resize(200,200);
-    mywidget->show();
-    mywidget->paintGL(&data);
 
-    ui->openGLWidget = mywidget;
     delete ui;
+}
+
+
+void MainWindow::on_Button_translate_x_clicked()
+{
+   ui->widget->translate_x(ui->lineEdit_translate_x->text());
+   ui->widget->paintGL();
+   ui->widget->update();
+}
+
+void MainWindow::on_Button_translate_y_clicked()
+{
+    ui->widget->translate_y(ui->lineEdit_translate_y->text());
+    ui->widget->paintGL();
+    ui->widget->update();
+}
+
+
+void MainWindow::on_Button_translate_z_clicked()
+{
+    ui->widget->translate_z(ui->lineEdit_translate_z->text());
+    ui->widget->paintGL();
+    ui->widget->update();
+}
+
+
+void MainWindow::on_Button_rotate_x_clicked()
+{
+    ui->widget->rotate_x(ui->lineEdit_rotate_x->text());
+    ui->widget->paintGL();
+    ui->widget->update();
+}
+
+
+void MainWindow::on_Button_rotate_y_clicked()
+{
+    ui->widget->rotate_y(ui->lineEdit_rotate_y->text());
+    ui->widget->paintGL();
+    ui->widget->update();
+}
+
+
+void MainWindow::on_Button_rotate_z_clicked()
+{
+    ui->widget->rotate_z(ui->lineEdit_rotate_z->text());
+    ui->widget->paintGL();
+    ui->widget->update();
+}
+
+
+void MainWindow::on_Button_scale_clicked()
+{
+    ui->widget->scale(ui->lineEdit_scale_value->text());
+    ui->widget->paintGL();
+    ui->widget->update();
 }
 
