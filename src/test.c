@@ -42,8 +42,8 @@ START_TEST(init_data_2) {
   f = 4;
 
   data = create_data();
-  data->count_of_facets = 4;
-  data->count_of_vertexes = 4;
+  data->count_of_facets = f;
+  data->count_of_vertexes = v;
   init_data(data);
 
   ck_assert_ptr_nonnull(data->matrix_3d.matrix);
@@ -83,8 +83,8 @@ START_TEST(init_polygon_3) {
   line = "1 2 3";
 
   data = create_data();
-  data->count_of_facets = 4;
-  data->count_of_vertexes = 4;
+  data->count_of_facets = f;
+  data->count_of_vertexes = v;
 
   init_data(data);
   init_polygon(data, line, index);
@@ -102,18 +102,16 @@ END_TEST
 
 START_TEST(destroy_data_1) {
   data_t *data;
-  int f, v, index;
-  char *line;
+  int f, v;
+
 
   data = NULL;
   v = 4;
   f = 4;
-  index = 1;
-  line = "1 2 3";
 
   data = create_data();
-  data->count_of_facets = 4;
-  data->count_of_vertexes = 4;
+  data->count_of_facets = f;
+  data->count_of_vertexes = v;
 
   init_data(data);
   destroy_data(&data);
@@ -123,11 +121,9 @@ END_TEST
 
 START_TEST(found_min_max_or_1) {
   matrix_t matrix;
-  int v;
   int *ptr_x;
   int *ptr_y;
   int *ptr_z;
-  v = 3;
   matrix.rows = 4;
   matrix.cols = 3;
   matrix.matrix = (double **)malloc(sizeof(double *) * matrix.rows);
@@ -152,6 +148,9 @@ START_TEST(found_min_max_or_1) {
   ck_assert_int_eq(ptr_y[1], 3);
   ck_assert_int_eq(ptr_z[0], 1);
   ck_assert_int_eq(ptr_z[1], 3);
+  free(ptr_x);
+  free(ptr_y);
+  free(ptr_z);
 }
 END_TEST
 

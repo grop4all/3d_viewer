@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -Wall -Wextra -std=c11 -g
+CFLAGS = -Wall -Wextra -std=c11 
 
 LIBS = -lcheck
 
@@ -8,7 +8,7 @@ ifeq ($(shell uname), Linux)
 	LINUX_LIBS=-lsubunit -lrt -lpthread -lm
 endif
 
-
+.PHONY: install uninstall build test dist dvi clean 
 all: install tests
 
 build:
@@ -16,7 +16,7 @@ build:
 	gcc -c $(CFLAGS) transformations.c transformations.h
 
 tests: build
-	gcc test.c *.o -o out $(LIBS) $(LINUX_LIBS)
+	gcc test.c $(CFLAGS) *.o -o out $(LIBS) $(LINUX_LIBS)
 	./out
 
 
@@ -27,6 +27,7 @@ install:
 	
 
 dvi:
+	open 
 
 uninstall: clean
 	rm -rf build_3d
