@@ -27,7 +27,7 @@ install:
 	
 
 dvi:
-	open 
+	open READMI.md
 
 uninstall: clean
 	rm -rf build_3d
