@@ -1,14 +1,14 @@
 CC = gcc
 CFLAGS = -Wall -Wextra -std=c11 
-
 LIBS = -lcheck
+OS := $(shell uname -s)
 
 
-ifeq ($(shell uname), Linux)
+ifeq ($(OS),Linux)
 	LINUX_LIBS=-lsubunit -lrt -lpthread -lm
 endif
 
-.PHONY: install uninstall build test dist dvi clean 
+.PHONY: install uninstall build tests dist dvi clean 
 all: install tests
 
 build:
@@ -19,12 +19,16 @@ tests: build
 	gcc test.c $(CFLAGS) *.o -o out $(LIBS) $(LINUX_LIBS)
 	./out
 
-
+# C8_3DViewer_v1.0-1/src/build_3d/3d.app/Contents/MacOS
 install:
 	rm -rf build_3d
 	mkdir build_3d
-	cd build_3d/ && qmake ../3d && make
-	
+	cd build_3d/ && qmake ../3d && make && pwd
+ifeq ($(OS),Darwin)
+	ls ./build_3d/3d.app/Contents/MacOS/3d
+	cp ./build_3d/3d.app/Contents/MacOS/3d ./build_3d/3d 
+	./build_3d/3d
+endif	
 
 dvi:
 	open READMI.md
@@ -32,14 +36,14 @@ dvi:
 uninstall: clean
 	rm -rf build_3d
 
-dist:
+dist: install
 	rm -rf dist_3d
 	mkdir dist_3d
 	tar -cf dist_3d/3d.tar build_3d
 
 gcov_report: test.c build
 	clear
-	gcc test.c *.o -o coverage.o $(LIBS) $(LINUX_LIBS) -fprofile-arcs -ftest-coverage  
+	gcc $(CFLAGS) -g test.c *.o -o coverage.o $(LIBS) $(LINUX_LIBS) -fprofile-arcs -ftest-coverage  
 	./coverage.o
 	lcov -c -d . -o coverage.info
 	genhtml coverage.info -o coverage
@@ -51,7 +55,12 @@ clean:
 	- rm -rf coverage 
 	- rm -rf out
 	- rm -rf dist_3d
-	
 
-leaks: all
-	valgrind --leak-check=full  --track-origins=yes ./out
+lint:
+	cp ../materials/linters/.clang-format .
+	clang-format -i *.c *.h
+	clang-format -n *.c *.h
+	rm .clang-format
+
+leaks:
+	valgrind --leak-check=full  --show-leak-kinds=all --track-origins=yes ./out

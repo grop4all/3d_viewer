@@ -1,14 +1,20 @@
-#include "./parser.h"
-#include "./transformations.h"
-
 #include <check.h>
 #include <stdio.h>
 #include <stdlib.h>
+
+#ifndef M_PI
+    #define M_PI 3.14159265358979323846
+#endif
+
+
+#include "./parser.h"
+#include "./transformations.h"
 
 START_TEST(create_data_1) {
   data_t *data;
   ck_assert_ptr_nonnull(data = create_data());
   free(data);
+  data = NULL;
 }
 END_TEST
 
@@ -53,7 +59,9 @@ START_TEST(init_data_2) {
 
   for (int i = 0; i < data->matrix_3d.rows; ++i)
     free(data->matrix_3d.matrix[i]);
+
   free(data->matrix_3d.matrix);
+  free(data->polygons[0].vertexes);
   free(data->polygons);
   free(data);
 }
@@ -93,8 +101,12 @@ START_TEST(init_polygon_3) {
   for (int i = 0; i < data->polygons[index].numbers_of_vertexes_in_facets; ++i)
     ck_assert_int_eq(data->polygons[index].vertexes[i], i + 1);
 
+    
   free(data->polygons[index].vertexes);
+  free(data->polygons[0].vertexes);
   free(data->polygons);
+  for (int i = 0; i < data->matrix_3d.rows; ++i)
+    free(data->matrix_3d.matrix[i]);
   free(data->matrix_3d.matrix);
   free(data);
 }
@@ -103,7 +115,6 @@ END_TEST
 START_TEST(destroy_data_1) {
   data_t *data;
   int f, v;
-
 
   data = NULL;
   v = 4;
@@ -132,8 +143,7 @@ START_TEST(found_min_max_or_1) {
     matrix.matrix[i] = (double *)malloc(sizeof(double) * matrix.cols);
 
   for (int i = 0; i < matrix.rows; ++i)
-    for (int j = 0; j < 3; ++j)
-      matrix.matrix[i][j] = .0;
+    for (int j = 0; j < 3; ++j) matrix.matrix[i][j] = .0;
 
   for (int i = 1; i < matrix.rows; ++i) {
     matrix.matrix[i][0] = i;
@@ -148,6 +158,10 @@ START_TEST(found_min_max_or_1) {
   ck_assert_int_eq(ptr_y[1], 3);
   ck_assert_int_eq(ptr_z[0], 1);
   ck_assert_int_eq(ptr_z[1], 3);
+
+  for (int i = 0; i < matrix.rows; ++i)
+    free(matrix.matrix[i]);
+  free(matrix.matrix);
   free(ptr_x);
   free(ptr_y);
   free(ptr_z);
@@ -155,7 +169,6 @@ START_TEST(found_min_max_or_1) {
 END_TEST
 
 START_TEST(first_init_val_gl_1) {
-
   matrix_t matrix;
   matrix.rows = 4;
   matrix.cols = 3;
@@ -165,8 +178,7 @@ START_TEST(first_init_val_gl_1) {
     matrix.matrix[i] = (double *)malloc(sizeof(double) * matrix.cols);
 
   for (int i = 0; i < matrix.rows; ++i)
-    for (int j = 0; j < 3; ++j)
-      matrix.matrix[i][j] = .0;
+    for (int j = 0; j < 3; ++j) matrix.matrix[i][j] = .0;
 
   for (int i = 1; i < matrix.rows; ++i) {
     matrix.matrix[i][0] = i;
@@ -179,11 +191,14 @@ START_TEST(first_init_val_gl_1) {
   for (int i = 1; i < matrix.rows; ++i)
     for (int j = 0; j < 3; ++j)
       ck_assert_double_eq(matrix.matrix[i][j], i * 0.5);
+  
+  for (int i = 0; i < matrix.rows; ++i)
+    free(matrix.matrix[i]);
+  free(matrix.matrix);
 }
 END_TEST
 
 START_TEST(move_x_1) {
-
   double arg;
   arg = 1.0;
   matrix_t matrix;
@@ -195,8 +210,7 @@ START_TEST(move_x_1) {
     matrix.matrix[i] = (double *)malloc(sizeof(double) * matrix.cols);
 
   for (int i = 0; i < matrix.rows; ++i)
-    for (int j = 0; j < 3; ++j)
-      matrix.matrix[i][j] = .0;
+    for (int j = 0; j < 3; ++j) matrix.matrix[i][j] = .0;
 
   for (int i = 1; i < matrix.rows; ++i) {
     matrix.matrix[i][0] = i;
@@ -207,11 +221,14 @@ START_TEST(move_x_1) {
 
   for (int i = 1; i < matrix.rows; ++i)
     ck_assert_double_eq(matrix.matrix[i][0], i + arg);
+  
+  for (int i = 0; i < matrix.rows; ++i)
+    free(matrix.matrix[i]);
+  free(matrix.matrix);
 }
 END_TEST
 
 START_TEST(move_y_1) {
-
   double arg;
   arg = 1.0;
   matrix_t matrix;
@@ -223,8 +240,7 @@ START_TEST(move_y_1) {
     matrix.matrix[i] = (double *)malloc(sizeof(double) * matrix.cols);
 
   for (int i = 0; i < matrix.rows; ++i)
-    for (int j = 0; j < 3; ++j)
-      matrix.matrix[i][j] = .0;
+    for (int j = 0; j < 3; ++j) matrix.matrix[i][j] = .0;
 
   for (int i = 1; i < matrix.rows; ++i) {
     matrix.matrix[i][0] = i;
@@ -235,11 +251,13 @@ START_TEST(move_y_1) {
 
   for (int i = 1; i < matrix.rows; ++i)
     ck_assert_double_eq(matrix.matrix[i][1], i + arg);
+  for (int i = 0; i < matrix.rows; ++i)
+    free(matrix.matrix[i]);
+  free(matrix.matrix);
 }
 END_TEST
 
 START_TEST(move_z_1) {
-
   double arg;
   arg = 1.0;
   matrix_t matrix;
@@ -251,8 +269,7 @@ START_TEST(move_z_1) {
     matrix.matrix[i] = (double *)malloc(sizeof(double) * matrix.cols);
 
   for (int i = 0; i < matrix.rows; ++i)
-    for (int j = 0; j < 3; ++j)
-      matrix.matrix[i][j] = .0;
+    for (int j = 0; j < 3; ++j) matrix.matrix[i][j] = .0;
 
   for (int i = 1; i < matrix.rows; ++i) {
     matrix.matrix[i][0] = i;
@@ -263,6 +280,10 @@ START_TEST(move_z_1) {
 
   for (int i = 1; i < matrix.rows; ++i)
     ck_assert_double_eq(matrix.matrix[i][2], i + arg);
+
+  for (int i = 0; i < matrix.rows; ++i)
+    free(matrix.matrix[i]);
+  free(matrix.matrix);
 }
 END_TEST
 
@@ -278,8 +299,7 @@ START_TEST(rotation_by_ox_1) {
     matrix.matrix[i] = (double *)malloc(sizeof(double) * matrix.cols);
 
   for (int i = 0; i < matrix.rows; ++i)
-    for (int j = 0; j < 3; ++j)
-      matrix.matrix[i][j] = .0;
+    for (int j = 0; j < 3; ++j) matrix.matrix[i][j] = .0;
 
   for (int i = 0; i < matrix.rows; ++i) {
     matrix.matrix[i][0] = 1;
@@ -294,6 +314,10 @@ START_TEST(rotation_by_ox_1) {
     ck_assert_double_eq(matrix.matrix[i][1], cos(arg) + sin(arg));
     ck_assert_double_eq(matrix.matrix[i][2], -sin(arg) + cos(arg));
   }
+
+  for (int i = 0; i < matrix.rows; ++i)
+    free(matrix.matrix[i]);
+  free(matrix.matrix);
 }
 END_TEST
 
@@ -309,8 +333,7 @@ START_TEST(rotation_by_oy_1) {
     matrix.matrix[i] = (double *)malloc(sizeof(double) * matrix.cols);
 
   for (int i = 0; i < matrix.rows; ++i)
-    for (int j = 0; j < 3; ++j)
-      matrix.matrix[i][j] = .0;
+    for (int j = 0; j < 3; ++j) matrix.matrix[i][j] = .0;
 
   for (int i = 0; i < matrix.rows; ++i) {
     matrix.matrix[i][0] = 1;
@@ -325,6 +348,9 @@ START_TEST(rotation_by_oy_1) {
     ck_assert_double_eq(matrix.matrix[i][1], 1);
     ck_assert_double_eq(matrix.matrix[i][2], -sin(arg) + cos(arg));
   }
+  for (int i = 0; i < matrix.rows; ++i)
+    free(matrix.matrix[i]);
+  free(matrix.matrix);
 }
 END_TEST
 
@@ -340,8 +366,7 @@ START_TEST(rotation_by_oz_1) {
     matrix.matrix[i] = (double *)malloc(sizeof(double) * matrix.cols);
 
   for (int i = 0; i < matrix.rows; ++i)
-    for (int j = 0; j < 3; ++j)
-      matrix.matrix[i][j] = .0;
+    for (int j = 0; j < 3; ++j) matrix.matrix[i][j] = .0;
 
   for (int i = 0; i < matrix.rows; ++i) {
     matrix.matrix[i][0] = 1;
@@ -356,6 +381,9 @@ START_TEST(rotation_by_oz_1) {
     ck_assert_double_eq(matrix.matrix[i][1], -sin(arg) + cos(arg));
     ck_assert_double_eq(matrix.matrix[i][2], 1);
   }
+  for (int i = 0; i < matrix.rows; ++i)
+    free(matrix.matrix[i]);
+  free(matrix.matrix);
 }
 END_TEST
 

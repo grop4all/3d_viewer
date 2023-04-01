@@ -14,4 +14,4 @@ void scale_model(matrix_t *A, double alp);
 void found_min_max_or(matrix_t *A, int **ptr_x, int **ptr_y, int **ptr_z);
 void first_centers(matrix_t *A);
 void first_init_val_gl(matrix_t *A);
-void first_init_val(matrix_t* A);
+void first_init_val(matrix_t *A);

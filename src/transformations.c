@@ -13,20 +13,14 @@ void found_min_max_or(matrix_t *A, int **ptr_x, int **ptr_y, int **ptr_z) {
   min_max_z[1] = 1;
 
   for (int i = 1; i < A->rows; ++i) {
-    if (A->matrix[min_max_x[0]][0] > A->matrix[i][0])
-      min_max_x[0] = i;
-    if (A->matrix[min_max_x[1]][0] < A->matrix[i][0])
-      min_max_x[1] = i;
+    if (A->matrix[min_max_x[0]][0] > A->matrix[i][0]) min_max_x[0] = i;
+    if (A->matrix[min_max_x[1]][0] < A->matrix[i][0]) min_max_x[1] = i;
 
-    if (A->matrix[min_max_y[0]][1] > A->matrix[i][1])
-      min_max_y[0] = i;
-    if (A->matrix[min_max_y[1]][1] < A->matrix[i][1])
-      min_max_y[1] = i;
+    if (A->matrix[min_max_y[0]][1] > A->matrix[i][1]) min_max_y[0] = i;
+    if (A->matrix[min_max_y[1]][1] < A->matrix[i][1]) min_max_y[1] = i;
 
-    if (A->matrix[min_max_z[0]][2] > A->matrix[i][2])
-      min_max_z[0] = i;
-    if (A->matrix[min_max_z[1]][2] < A->matrix[i][2])
-      min_max_z[1] = i;
+    if (A->matrix[min_max_z[0]][2] > A->matrix[i][2]) min_max_z[0] = i;
+    if (A->matrix[min_max_z[1]][2] < A->matrix[i][2]) min_max_z[1] = i;
   }
   *ptr_x = min_max_x;
   *ptr_y = min_max_y;
@@ -34,7 +28,6 @@ void found_min_max_or(matrix_t *A, int **ptr_x, int **ptr_y, int **ptr_z) {
 }
 
 void first_centers(matrix_t *A) {
-
   int *min_max_x = NULL;
   int *min_max_y = NULL;
   int *min_max_z = NULL;
@@ -62,7 +55,6 @@ void first_centers(matrix_t *A) {
 }
 
 void first_init_val_gl(matrix_t *A) {
-
   int *min_max_x = NULL;
   int *min_max_y = NULL;
   int *min_max_z = NULL;
@@ -80,10 +72,8 @@ void first_init_val_gl(matrix_t *A) {
   delz = A->matrix[min_max_z[1]][2] - A->matrix[min_max_z[0]][2];
 
   dmax = delx;
-  if (dely > dmax)
-    dmax = dely;
-  if (delx > dmax)
-    dmax = delz;
+  if (dely > dmax) dmax = dely;
+  if (delx > dmax) dmax = delz;
 
   scal = (value - (value * (-1))) / dmax;
 
@@ -98,7 +88,6 @@ void first_init_val_gl(matrix_t *A) {
 }
 
 void first_init_val(matrix_t *A) {
-
   int *min_max_x = NULL;
   int *min_max_y = NULL;
   int *min_max_z = NULL;
@@ -121,7 +110,7 @@ void first_init_val(matrix_t *A) {
     A->matrix[i][2] -= centerz;
   }
 
-  const double value = 0.5;
+  const double value = 0.3;
   double scal;
   double dmax;
 
@@ -134,10 +123,8 @@ void first_init_val(matrix_t *A) {
   delz = A->matrix[min_max_z[1]][2] - A->matrix[min_max_z[0]][2];
 
   dmax = delx;
-  if (dely > dmax)
-    dmax = dely;
-  if (delx > dmax)
-    dmax = delz;
+  if (dely > dmax) dmax = dely;
+  if (delx > dmax) dmax = delz;
 
   scal = (value - (value * (-1))) / dmax;
 
@@ -152,18 +139,15 @@ void first_init_val(matrix_t *A) {
 }
 
 void move_x(matrix_t *A, double a) {
-  for (int i = 0; i < A->rows; i++)
-    A->matrix[i][0] += a;
+  for (int i = 0; i < A->rows; i++) A->matrix[i][0] += a;
 }
 
 void move_y(matrix_t *A, double a) {
-  for (int i = 0; i < A->rows; i++)
-    A->matrix[i][1] += a;
+  for (int i = 0; i < A->rows; i++) A->matrix[i][1] += a;
 }
 
 void move_z(matrix_t *A, double a) {
-  for (int i = 0; i < A->rows; i++)
-    A->matrix[i][2] += a;
+  for (int i = 0; i < A->rows; i++) A->matrix[i][2] += a;
 }
 
 void rotation_by_ox(matrix_t *A, double angle) {
@@ -195,7 +179,10 @@ void rotation_by_oz(matrix_t *A, double angle) {
 
 void scale_model(matrix_t *A, double alp) {
   if (alp)
-    for (int i = 0; i < A->rows; i++)
-      for (int j = 0; j < A->cols; j++)
-        A->matrix[i][j] *= alp;
+    for (int i = 0; i < A->rows; i++) {
+      A->matrix[i][0] *= alp;
+      A->matrix[i][1] *= alp;      
+      A->matrix[i][2] *= alp;
+    }
+
 }

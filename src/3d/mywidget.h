@@ -3,7 +3,7 @@
 
 #include <QWidget>
 #include <QOpenGLWidget>
-#include <GL/gl.h>
+
 extern "C" {
     #include "parser.h"
     #include "transformations.h"

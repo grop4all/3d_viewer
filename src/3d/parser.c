@@ -13,7 +13,6 @@ data_t *create_data() {
 }
 
 int parsline(char *filename, data_t *data) {
-
   FILE *file;
   fpos_t pos;
   int tmp;
@@ -28,23 +27,19 @@ int parsline(char *filename, data_t *data) {
   buff_line = NULL;
   currline = NULL;
 
-  if (NULL == (file = fopen(filename, "r")))
-    return 0;
-  if (data == NULL)
-    return 0;
+  if (NULL == (file = fopen(filename, "r"))) return 0;
+  if (data == NULL) return 0;
 
   fgetpos(file, &pos);
   int puff;
   while (EOF != (tmp = getc(file))) {
     if ('f' == tmp) {
       puff = getc(file);
-      if (puff == ' ')
-        data->count_of_facets += 1;
+      if (puff == ' ') data->count_of_facets += 1;
     }
     if ('v' == tmp) {
       puff = getc(file);
-      if (puff == ' ')
-        data->count_of_vertexes += 1;
+      if (puff == ' ') data->count_of_vertexes += 1;
     }
   }
 
@@ -66,13 +61,13 @@ int parsline(char *filename, data_t *data) {
     if ('f' == tmp) {
       puff = getc(file);
       if (puff == ' ') {
-        getline(&currline, &len, file);
-        buff_line = malloc(len);
-        for (int i = 0; currline[i] != '\0'; ++i)
-          buff_line[i] = currline[i];
-        init_polygon(data, buff_line, f);
-        ++f;
-        free(buff_line);
+        if (getline(&currline, &len, file)) {
+          buff_line = malloc(len);
+          for (int i = 0; currline[i] != '\0'; ++i) buff_line[i] = currline[i];
+          init_polygon(data, buff_line, f);
+          ++f;
+          free(buff_line);
+        }
       }
     }
   }
@@ -98,8 +93,7 @@ int init_data(data_t *data) {
           (double *)malloc(sizeof(double) * data->matrix_3d.cols);
 
     for (int i = 0; i < data->matrix_3d.rows; ++i)
-      for (int j = 0; j < 3; ++j)
-        data->matrix_3d.matrix[i][j] = .0;
+      for (int j = 0; j < 3; ++j) data->matrix_3d.matrix[i][j] = .0;
 
     data->polygons = malloc(sizeof(polygon_t) * (data->count_of_facets + 1));
     data->polygons[0].vertexes = malloc(1);
@@ -128,8 +122,7 @@ int init_polygon(data_t *data, char *line, int index) {
 
     data->polygons[index].numbers_of_vertexes_in_facets = count;
     data->polygons[index].vertexes = malloc(sizeof(int) * count);
-    if (data->polygons[index].vertexes == NULL)
-      ans = 0;
+    if (data->polygons[index].vertexes == NULL) ans = 0;
     strcpy(buff_line, line);
     tmp = strtok(buff_line, delim);
     for (int i = 0; i < data->polygons[index].numbers_of_vertexes_in_facets;
@@ -144,7 +137,7 @@ int init_polygon(data_t *data, char *line, int index) {
 }
 
 void destroy_data(data_t **datta) {
-  data_t* data = *datta;
+  data_t *data = *datta;
   for (int i = 0; i <= data->count_of_facets; ++i) {
     free(data->polygons[i].vertexes);
     data->polygons[i].vertexes = NULL;

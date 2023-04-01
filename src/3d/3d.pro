@@ -1,5 +1,9 @@
 QT       += core gui opengl
 
+macx {
+    QT += openglwidgets
+}
+
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 CONFIG += c++11
@@ -26,7 +30,6 @@ HEADERS += \
 FORMS += \
     mainwindow.ui
 
-LIBS += -lGL
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
