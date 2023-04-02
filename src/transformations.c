@@ -179,7 +179,7 @@ void rotation_by_oz(matrix_t *A, double angle) {
 
 void scale_model(matrix_t *A, double alp) {
   if (alp)
-    for (int i = 0; i < A->rows / 2; i++) {
+    for (int i = 0; i < A->rows; i++) {
       A->matrix[i][0] *= alp;
       A->matrix[i][1] *= alp;      
       A->matrix[i][2] *= alp;

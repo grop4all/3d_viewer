@@ -8,7 +8,7 @@ ifeq ($(OS),Linux)
 	LINUX_LIBS=-lsubunit -lrt -lpthread -lm
 endif
 
-.PHONY: install uninstall build tests dist dvi clean 
+.PHONY: install uninstall build tests dist dvi clean test
 all: install tests
 
 build:
