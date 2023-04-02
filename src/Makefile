@@ -16,7 +16,7 @@ build:
 	gcc -c $(CFLAGS) transformations.c transformations.h
 
 tests: build
-	gcc test.c $(CFLAGS) *.o -o out $(LIBS) $(LINUX_LIBS)
+	gcc $(CFLAGS) test.c  *.o -o out $(LIBS) $(LINUX_LIBS)
 	./out
 
 # C8_3DViewer_v1.0-1/src/build_3d/3d.app/Contents/MacOS

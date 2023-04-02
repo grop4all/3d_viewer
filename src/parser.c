@@ -3,7 +3,8 @@
 
 //  int main () {
 //   data_t* data = create_data();
-//   parsline("obj/cube.obj", data);
+//   parsline("obj/City.obj", data);
+//   destroy_data(&data);
 // }
 
 data_t *create_data() {
@@ -57,9 +58,9 @@ int parsline(char *filename, data_t *data) {
         if (0 != sscanf(currline, "v %lf%lf%lf", &data->matrix_3d.matrix[v][0],
                    &data->matrix_3d.matrix[v][1],
                    &data->matrix_3d.matrix[v][2])){
-          // {  printf("\n%lf %lf %lf", data->matrix_3d.matrix[v][0],
-          //          data->matrix_3d.matrix[v][1],
-          //          data->matrix_3d.matrix[v][2]);
+            // printf("\n%lf %lf %lf", data->matrix_3d.matrix[v][0],
+            //        data->matrix_3d.matrix[v][1],
+            //        data->matrix_3d.matrix[v][2]);
           ++v;}
       }
     if ('f' == currline[0] && ' ' == currline[1]) {
@@ -115,6 +116,7 @@ int init_polygon(data_t *data, char *line, int index) {
 
     strcpy(buff_line, line);
     strtok(buff_line, delim);
+    strtok(NULL, delim);
     for (; strtok(NULL, delim) != NULL; ++count)
       ;
 
@@ -131,6 +133,7 @@ int init_polygon(data_t *data, char *line, int index) {
           data->polygons[index].vertexes[i] = digit;
       tmp = strtok(NULL, delim);
     }
+    // printf("%d", count);
     //  for (int i = 0; i < data->polygons[index].numbers_of_vertexes_in_facets;
     //      ++i) {
     //   printf(" %d ",data->polygons[index].vertexes[i]);
