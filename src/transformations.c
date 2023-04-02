@@ -184,4 +184,5 @@ void scale_model(matrix_t *A, double alp) {
       A->matrix[i][1] *= alp;      
       A->matrix[i][2] *= alp;
     }
+
 }

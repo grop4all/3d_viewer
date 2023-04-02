@@ -115,9 +115,9 @@ int init_polygon(data_t *data, char *line, int index) {
     char *delim = " ";
 
     strcpy(buff_line, line);
-    strtok(buff_line, delim);
-    strtok(NULL, delim);
-    for (; strtok(NULL, delim) != NULL; ++count)
+    tmp = strtok(buff_line, delim);
+    // tmp = strtok(NULL, delim);
+    for (; (tmp = strtok(NULL, delim)) != NULL && (atoi(tmp) != 0); ++count)
       ;
 
     data->polygons[index].numbers_of_vertexes_in_facets = count;
