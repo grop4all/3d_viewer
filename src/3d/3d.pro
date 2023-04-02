@@ -16,15 +16,15 @@ SOURCES += \
     main.cpp \
     mainwindow.cpp \
     mywidget.cpp \
-    parser.c \
-    transformations.c
+    ../parser.c \
+    ../transformations.c
 
 
 HEADERS += \
     mainwindow.h \
     mywidget.h \
-    parser.h \
-    transformations.h
+    ../parser.h \
+    ../transformations.h
 
 
 FORMS += \

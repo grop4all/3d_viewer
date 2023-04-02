@@ -13,6 +13,8 @@ data_t *create_data() {
 }
 
 int parsline(char *filename, data_t *data) {
+  
+  long int start = clock();
   FILE *file;
   fpos_t pos;
   int tmp;
@@ -20,6 +22,7 @@ int parsline(char *filename, data_t *data) {
   size_t len;
   int ans;
   char *buff_line;
+
 
   len = 128;
   ans = 1;
@@ -44,7 +47,6 @@ int parsline(char *filename, data_t *data) {
   }
 
   fsetpos(file, &pos);
-
   init_data(data);
   int v = 1, f = 1;
   while (!feof(file)) {
@@ -73,6 +75,7 @@ int parsline(char *filename, data_t *data) {
   }
   free(currline);
   fclose(file);
+  printf("\n%lf\n",start - clock() * 1.0 / CLOCKS_PER_SEC);
   return ans;
 }
 
@@ -100,6 +103,7 @@ int init_data(data_t *data) {
   }
   return ans;
 }
+
 
 int init_polygon(data_t *data, char *line, int index) {
   int ans;

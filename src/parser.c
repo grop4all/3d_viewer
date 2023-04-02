@@ -1,5 +1,11 @@
 #include "parser.h"
 
+
+//  int main () {
+//   data_t* data = create_data();
+//   parsline("obj/cube.obj", data);
+// }
+
 data_t *create_data() {
   data_t *data = NULL;
   data = (data_t *)malloc(sizeof(data_t));
@@ -13,6 +19,8 @@ data_t *create_data() {
 }
 
 int parsline(char *filename, data_t *data) {
+  
+  long int start = clock();
   FILE *file;
   fpos_t pos;
   int tmp;
@@ -25,52 +33,41 @@ int parsline(char *filename, data_t *data) {
   ans = 1;
   tmp = 0;
   buff_line = NULL;
-  currline = NULL;
+  currline = malloc(len);
 
   if (NULL == (file = fopen(filename, "r"))) return 0;
   if (data == NULL) return 0;
 
   fgetpos(file, &pos);
   int puff;
-  while (EOF != (tmp = getc(file))) {
-    if ('f' == tmp) {
-      puff = getc(file);
-      if (puff == ' ') data->count_of_facets += 1;
-    }
-    if ('v' == tmp) {
-      puff = getc(file);
-      if (puff == ' ') data->count_of_vertexes += 1;
-    }
+  while (-1 != getline(&currline, &len, file)) {
+    if ('f' == currline[0] && ' ' == currline[1]) 
+        data->count_of_facets += 1;
+    if ('v' == currline[0] && ' ' == currline[1])
+      data->count_of_vertexes += 1;
+    //if (EOF == getc(file)) break;
   }
-
+  printf("first read \n%lf\n",(clock() - start) * 1.0 / CLOCKS_PER_SEC);
+  start = clock();
   fsetpos(file, &pos);
-
   init_data(data);
   int v = 1, f = 1;
-  while (!feof(file)) {
-    tmp = getc(file);
-    if ('v' == tmp) {
-      puff = getc(file);
-      if (puff == ' ') {
-        if (fscanf(file, "%lf%lf%lf", &data->matrix_3d.matrix[v][0],
+  while (-1 != getline(&currline, &len, file)) {
+    if ('v' == currline[0] && ' ' == currline[1]) {
+        if (0 != sscanf(currline, "v %lf%lf%lf", &data->matrix_3d.matrix[v][0],
                    &data->matrix_3d.matrix[v][1],
-                   &data->matrix_3d.matrix[v][2]))
-          ++v;
+                   &data->matrix_3d.matrix[v][2])){
+          // {  printf("\n%lf %lf %lf", data->matrix_3d.matrix[v][0],
+          //          data->matrix_3d.matrix[v][1],
+          //          data->matrix_3d.matrix[v][2]);
+          ++v;}
       }
-    }
-    if ('f' == tmp) {
-      puff = getc(file);
-      if (puff == ' ') {
-        if (getline(&currline, &len, file)) {
-          buff_line = malloc(len);
-          for (int i = 0; currline[i] != '\0'; ++i) buff_line[i] = currline[i];
-          init_polygon(data, buff_line, f);
+    if ('f' == currline[0] && ' ' == currline[1]) {
+          init_polygon(data, currline, f);
           ++f;
-          free(buff_line);
         }
-      }
-    }
-  }
+  }   
+  printf("second read \n%lf\n",(clock() - start) * 1.0 / CLOCKS_PER_SEC);
   free(currline);
   fclose(file);
   return ans;
@@ -101,6 +98,7 @@ int init_data(data_t *data) {
   return ans;
 }
 
+
 int init_polygon(data_t *data, char *line, int index) {
   int ans;
   ans = 1;
@@ -109,7 +107,7 @@ int init_polygon(data_t *data, char *line, int index) {
   else if (line == NULL)
     ans = 0;
   else {
-    int count = 1;
+    int count = 0;
     char *buff_line = NULL;
     buff_line = malloc(strlen(line) + 1);
     char *tmp = NULL;
@@ -125,12 +123,20 @@ int init_polygon(data_t *data, char *line, int index) {
     if (data->polygons[index].vertexes == NULL) ans = 0;
     strcpy(buff_line, line);
     tmp = strtok(buff_line, delim);
+    tmp = strtok(NULL, delim);
     for (int i = 0; i < data->polygons[index].numbers_of_vertexes_in_facets;
          ++i) {
-      data->polygons[index].vertexes[i] = atoi(tmp);
+        int digit = atoi(tmp);
+        if (digit != 0)
+          data->polygons[index].vertexes[i] = digit;
       tmp = strtok(NULL, delim);
     }
-    free(tmp);
+    //  for (int i = 0; i < data->polygons[index].numbers_of_vertexes_in_facets;
+    //      ++i) {
+    //   printf(" %d ",data->polygons[index].vertexes[i]);
+    // }
+    // printf("\n");
+  
     free(buff_line);
   }
   return ans;

@@ -21,6 +21,7 @@ void MyWidget::resizeGL(int h, int w) {
 }
 
 void MyWidget::paintGL(){
+    long int start = clock();
     if (data == NULL) return;
     for(int i = 1; i <= data->count_of_facets; ++i){
         for(int j = 0; j < data->polygons[i].numbers_of_vertexes_in_facets; ++j) {
@@ -31,6 +32,7 @@ void MyWidget::paintGL(){
         }
     glEnd();
     }
+    printf("paint time\n %lf \n", (clock() - start) *1.0 / CLOCKS_PER_SEC);
 }
 
 void  MyWidget::initialize_data() {

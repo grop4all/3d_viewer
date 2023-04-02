@@ -3,10 +3,11 @@
 
 #include <QWidget>
 #include <QOpenGLWidget>
+#include <time.h>
 
 extern "C" {
-    #include "parser.h"
-    #include "transformations.h"
+    #include "../parser.h"
+    #include "../transformations.h"
 }
 
 
