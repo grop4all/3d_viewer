@@ -58,9 +58,6 @@ int parsline(char *filename, data_t *data) {
         if (0 != sscanf(currline, "v %lf%lf%lf", &data->matrix_3d.matrix[v][0],
                    &data->matrix_3d.matrix[v][1],
                    &data->matrix_3d.matrix[v][2])){
-            // printf("\n%lf %lf %lf", data->matrix_3d.matrix[v][0],
-            //        data->matrix_3d.matrix[v][1],
-            //        data->matrix_3d.matrix[v][2]);
           ++v;}
       }
     if ('f' == currline[0] && ' ' == currline[1]) {
@@ -116,7 +113,7 @@ int init_polygon(data_t *data, char *line, int index) {
 
     strcpy(buff_line, line);
     tmp = strtok(buff_line, delim);
-    // tmp = strtok(NULL, delim);
+ 
     for (; (tmp = strtok(NULL, delim)) != NULL && (atoi(tmp) != 0); ++count)
       ;
 
